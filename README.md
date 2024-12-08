@@ -1,5 +1,7 @@
 # DAC63004W EVM Driver
 
+⚠️ **Status**: Work in Progress - Initial development
+
 Driver and control software for the Texas Instruments DAC63004W evaluation module.
 
 ## Overview
