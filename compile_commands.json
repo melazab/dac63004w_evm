@@ -1,0 +1,18 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Werror",
+      "-I./include",
+      "-I/usr/include/libftdi1",
+      "-c",
+      "-o",
+      "obj/ftdi_comm.o",
+      "src/ftdi_comm.c"
+    ],
+    "directory": "/home/mohamed/playground/c/dac63004w_evm",
+    "file": "/home/mohamed/playground/c/dac63004w_evm/src/ftdi_comm.c",
+    "output": "/home/mohamed/playground/c/dac63004w_evm/obj/ftdi_comm.o"
+  }
+]

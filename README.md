@@ -27,9 +27,26 @@ This project provides a Linux-based driver for controlling the DAC63004W evaluat
 make
 ```
 
+# <<<<<<< HEAD
+
 ## Usage
 
-[Add usage instructions and examples here]
+> ⚠️ This section is under development
+
+Basic usage instructions will be added soon. For now, you can:
+
+1. Build the project with `make`
+2. Run the executable: `./build/dac63004w`
+   > > > > > > > Snippet
+
+## Usage
+
+> ⚠️ This section is under development
+
+Basic usage instructions will be added soon. For now, you can:
+
+1. Build the project with `make`
+2. Run the executable: `./build/dac63004w`
 
 ## Contributing
 
@@ -71,7 +88,3 @@ Mohamed Elazab
 
 - Texas Instruments for the DAC63004W documentation
 - FTDI for their interface libraries
-
-```
-
-```

@@ -5,35 +5,25 @@ bin/
 # Object files
 *.o
 *.ko
-*.obj
 *.elf
 
 # Libraries
-*.lib
 *.a
+*.so
 *.la
 *.lo
 
 # Executables
-*.exe
 *.out
-*.app
 *.i*86
 *.x86_64
 *.hex
+
+# The clangd index
+.cache/
 
 # Debug files
 *.dSYM/
 
 # IDE specific files
 .vscode/
-.idea/
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
