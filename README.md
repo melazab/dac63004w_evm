@@ -3,6 +3,7 @@
 ⚠️ **Status**: Work in Progress - Initial development
 
 Driver and control software for the Texas Instruments DAC63004W evaluation module.
+![Description](docs/images/dac63004wcsp-evm-angled.png_large)
 
 ## Overview
 
@@ -27,8 +28,6 @@ This project provides a Linux-based driver for controlling the DAC63004W evaluat
 make
 ```
 
-# <<<<<<< HEAD
-
 ## Usage
 
 > ⚠️ This section is under development
@@ -36,17 +35,7 @@ make
 Basic usage instructions will be added soon. For now, you can:
 
 1. Build the project with `make`
-2. Run the executable: `./build/dac63004w`
-   > > > > > > > Snippet
-
-## Usage
-
-> ⚠️ This section is under development
-
-Basic usage instructions will be added soon. For now, you can:
-
-1. Build the project with `make`
-2. Run the executable: `./build/dac63004w`
+2. Run the executable: `./bin/dac63004`
 
 ## Contributing
 
