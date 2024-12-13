@@ -35,7 +35,7 @@ make
 Basic usage instructions will be added soon. For now, you can:
 
 1. Build the project with `make`
-2. Run the executable: `./bin/dac63004w`
+2. Run the executable: `./bin/dac63004`
 
 ## Contributing
 
