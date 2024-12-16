@@ -1,7 +1,7 @@
 # Compiler and flags
 CC := gcc
-CFLAGS := -Wall -Werror -I./include -I/usr/include/libftdi1
-LDFLAGS := -lftdi1 -lusb-1.0
+CFLAGS := -Wall -Werror -I./include -I/usr/include/libftdi1 -I/usr/local/include
+LDFLAGS := -lftdi1 -lusb-1.0 -lft4222 -Wl,-rpath,/usr/local/lib
 
 # Directories
 SRC_DIR := src

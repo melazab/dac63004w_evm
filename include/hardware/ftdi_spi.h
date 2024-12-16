@@ -1,21 +1,13 @@
 #ifndef FTDI_SPI_H_
 #define FTDI_SPI_H_
 
-#include <ftdi.h>
 #include <stdint.h>
-#include <stdlib.h>
-#include <stddef.h>
-
-// SPI configuration
-#define SPI_CLOCK_DIV      0x0000  // For 6MHz
-#define SPI_CPOL           0
-#define SPI_CPHA           0
+#include "libft4222.h" // Required for FT_HANDLE and FT4222 functions
 
 // Function prototypes
-int ftdi_spi_init(struct ftdi_context *ftdi);
-int ftdi_spi_write(struct ftdi_context *ftdi, const uint8_t *data, size_t len);
-int ftdi_spi_read(struct ftdi_context *ftdi, uint8_t *data, size_t len);
-int ftdi_spi_transfer(struct ftdi_context *ftdi, const uint8_t *tx_data, 
-                     uint8_t *rx_data, size_t len);
+int ftdi_spi_init(FT_HANDLE *ftHandle);
+int ftdi_spi_write(FT_HANDLE ftHandle, const uint8_t *data, size_t len);
+int ftdi_spi_read(FT_HANDLE ftHandle, uint8_t *data, size_t len);
+void ftdi_spi_cleanup(FT_HANDLE ftHandle);
 
 #endif /* FTDI_SPI_H_ */

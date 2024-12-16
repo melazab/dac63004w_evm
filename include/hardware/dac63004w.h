@@ -1,13 +1,13 @@
 #ifndef DAC63004W_H_
 #define DAC63004W_H_
 
-#include <ftdi.h>
 #include <stdint.h>
 #include "dac63004w_regs.h"
+#include "libft4222.h" // Include for FT_HANDLE
 
 // DAC context structure
 typedef struct {
-    struct ftdi_context *ftdi;
+    FT_HANDLE ftdi;     // Handle for the FT4222H device
     double vref;        // Reference voltage
     uint8_t channel;    // Current channel
     uint8_t mode;       // Operating mode
