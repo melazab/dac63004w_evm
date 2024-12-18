@@ -10,7 +10,7 @@ OBJ_DIR := obj
 BIN_DIR := bin
 
 # Source subdirectories 
-SRC_SUBDIRS := hardware modes utils waveforms
+SRC_SUBDIRS := hardware operations utils waveforms
 OBJS_SUBDIRS := $(addprefix $(OBJ_DIR)/,$(SRC_SUBDIRS)) 
 
 # Find all source files

@@ -28,9 +28,9 @@ static int write_reg(dac63004w_context *ctx, uint8_t reg, uint16_t value) {
   }
 
   uint8_t tx_data[3];
-  tx_data[0] = reg;          // Register address (7 bits)
-  tx_data[1] = (value >> 8); // Data MSB
-  tx_data[2] = value & 0xFF; // Data LSB
+  tx_data[0] = (reg & 0x7F);        // Register address (7 bits) + R/W=0
+  tx_data[1] = (value >> 8) & 0xFF; // Data MSB
+  tx_data[2] = value & 0xFF;        // Data LSB
 
   printf("Writing DAC register 0x%02X with value 0x%04X\n", reg, value);
 
@@ -42,7 +42,6 @@ static int write_reg(dac63004w_context *ctx, uint8_t reg, uint16_t value) {
 
   return DAC_SUCCESS;
 }
-
 // DAC initialization
 int dac63004w_init(dac63004w_context *ctx, double vref) {
   if (!ctx || vref <= 0) {
@@ -60,34 +59,27 @@ int dac63004w_init(dac63004w_context *ctx, double vref) {
   }
   usleep(1000); // Wait for reset to complete
 
-  // Step 2: Configure gain settings for each channel
+  // Step 2: Initialize default gain settings for each channel
+  uint16_t default_gain = GAIN_4X_INT_REFERENCE;
   for (uint8_t channel = 0; channel < 4; channel++) {
-    uint8_t reg_addr = 0x03 + channel; // DAC-X-VOUT-CMP-CONFIG
-    if (write_reg(ctx, reg_addr, 0x0800) != DAC_SUCCESS) {
+    uint8_t reg_addr = 0x03 + (channel * 6); // DAC_X_VOUT_CMP_CONFIG
+    if (write_reg(ctx, reg_addr, default_gain) != DAC_SUCCESS) {
       printf("Failed to configure gain for channel %d\n", channel);
       return DAC_ERROR_COMM;
     }
+    printf("Configuring gain for channel %d: reg_addr=0x%02X, value=0x%04X\n",
+           channel, reg_addr, default_gain);
   }
 
   // Step 3: Enable internal reference and set normal operation
   if (write_reg(ctx, DAC_REG_COMMON_CONFIG, 0x1249) != DAC_SUCCESS) {
-    printf("Failed to configure DAC common settings\n");
+    fprintf(stderr, "Failed to configure DAC common settings\n");
     return DAC_ERROR_COMM;
   }
 
-  // Step 4: Set all channels to mid-scale
-  for (uint8_t channel = 0; channel < 4; channel++) {
-    uint8_t reg_addr = get_dac_register(channel);
-    if (reg_addr == 0xFF ||
-        write_reg(ctx, reg_addr, DAC_DATA_MIDSCALE) != DAC_SUCCESS) {
-      printf("Failed to set channel %d to mid-scale\n", channel);
-      return DAC_ERROR_COMM;
-    }
-  }
-
-  // Step 5: Trigger LDAC to update outputs
+  // Step 4: Trigger LDAC to update outputs
   if (write_reg(ctx, DAC_REG_COMMON_TRIGGER, DAC_LDAC_TRIGGER) != DAC_SUCCESS) {
-    printf("Failed to trigger LDAC\n");
+    fprintf(stderr, "Failed to trigger LDAC\n");
     return DAC_ERROR_COMM;
   }
 
@@ -112,4 +104,14 @@ int dac63004w_write_voltage(dac63004w_context *ctx, uint8_t channel,
   printf("Setting channel %d to %.3fV (code: 0x%04X)\n", channel, voltage,
          dac_code);
   return write_reg(ctx, reg_addr, dac_code);
+}
+
+int dac63004w_configure_channel_gain(dac63004w_context *ctx, uint8_t channel,
+                                     uint16_t config_value) {
+  if (!ctx || channel > 3) {
+    return DAC_ERROR_PARAM;
+  }
+
+  uint8_t reg_addr = 0x03 + (channel * 6); // DAC-X-VOUT-CMP-CONFIG
+  return write_reg(ctx, reg_addr, config_value);
 }

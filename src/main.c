@@ -1,64 +1,69 @@
 #include "hardware/dac63004w.h"
 #include "hardware/ftdi_spi.h"
-#include <signal.h>
-#include <stdbool.h>
+#include "operations/operations.h"
+/* #include "utils/signal_utils.h" */
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
-static volatile bool running = true;
+void print_usage(const char *program_name);
 
-void signal_handler(int signum) {
-  (void)signum; // Unused parameter
-  running = false;
-  printf("\nReceived shutdown signal. Cleaning up...\n");
-}
+int main(int argc, char *argv[]) {
+  if (argc < 4) {
+    print_usage(argv[0]);
+    return EXIT_FAILURE;
+  }
+  // Parse command-line arguments
+  const char *operation = argv[1];
+  uint8_t channel = atoi(argv[2]);
+  float arg1 = atof(argv[3]);
 
-int main(void) {
-  FT_HANDLE ftHandle; // FT_HANDLE declared in libft4222.h
+  // Validate channel
+  if (channel > 3) {
+    fprintf(stderr, "Invalid channel: %d. Must be between 0 and 3.\n", channel);
+    return EXIT_FAILURE;
+  }
+
+  // Validate argument
+  if (arg1 < 0.0 || arg1 > 5.0) { // Assuming 0V to 5V range
+    fprintf(stderr, "Invalid argument: %.2f. Must be between 0.0 and 5.0.\n",
+            arg1);
+    return EXIT_FAILURE;
+  }
+  FT_HANDLE ftHandle;
   dac63004w_context dac_ctx;
-  int status;
 
   // Initialize FTDI SPI
   if (ftdi_spi_init(&ftHandle) != 0) {
-    printf("Failed to initialize FTDI SPI.\n");
-    return -1;
+    fprintf(stderr, "Failed to initialize FTDI SPI.\n");
+    return EXIT_FAILURE;
   }
 
-  // Initialize DAC with 3.3V reference
-  dac_ctx.ftdi = ftHandle;
-  status = dac63004w_init(&dac_ctx, 3.3);
-  if (status != DAC_SUCCESS) {
-    printf("DAC initialization failed: %d\n", status);
+  // Initialize DAC via operations_init
+  if (operations_init(ftHandle, &dac_ctx, 4.84) != DAC_SUCCESS) {
+    fprintf(stderr, "DAC initialization failed.\n");
     ftdi_spi_cleanup(ftHandle);
-    return -1;
+    return EXIT_FAILURE;
   }
 
-  printf("DAC initialized successfully!\n");
-
-  // Set up signal handler for Ctrl+C
-  signal(SIGINT, signal_handler);
-  signal(SIGTERM, signal_handler);
-  printf("Running... Press Ctrl+C to exit\n");
-
-  // Main loop
-  while (running) {
-    // Set voltage on each channel to mid-scale voltage
-    for (int channel = 0; channel < 4; channel++) {
-      status = dac63004w_write_voltage(&dac_ctx, channel, 1.00);
-      if (status != DAC_SUCCESS) {
-        printf("Failed to set voltage on channel %d\n", channel);
-      }
-    }
-    usleep(10000); // 10 ms delay
+  // Find and run requested operation
+  operation_handler_t handler = find_operation(operation);
+  if (!handler) {
+    fprintf(stderr, "Unknown operation: %s\n", operation);
+    ftdi_spi_cleanup(ftHandle);
+    return EXIT_FAILURE;
   }
 
-  // Cleanup - set all channels to 0V
-  printf("Setting all channels to 0V...\n");
-  for (int channel = 0; channel < 4; channel++) {
-    dac63004w_write_voltage(&dac_ctx, channel, 0.0);
+  if (handler(&dac_ctx, channel, arg1) != 0) {
+    fprintf(stderr, "Requested operation failed: %s\n", operation);
   }
 
   ftdi_spi_cleanup(ftHandle);
-  printf("Cleanup complete\n");
-  return 0;
+  return EXIT_SUCCESS;
+}
+
+void print_usage(const char *program_name) {
+  fprintf(stderr, "Usage: %s <operation> <channel> <arg1>\n", program_name);
+  fprintf(stderr, "Currently supported operations:\n");
+  fprintf(stderr, "\tdc_voltage <channel> <voltage>\n");
 }
