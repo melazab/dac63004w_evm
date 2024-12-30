@@ -5,18 +5,17 @@
 #include "hardware/ftdi_spi.h" // Required for FT_HANDLE type
 
 // Initialize DAC for operations
-int operations_init(FT_HANDLE ftHandle, dac63004w_context *ctx, float vref);
+int operations_init(FT_HANDLE ftHandle, dac63004w_context *ctx, float reference_voltage);
 
-// Function pointer type for operations
-typedef int (*operation_handler_t)(dac63004w_context *ctx, uint8_t channel, float arg1);
-
-// Find an operation handler by name
-operation_handler_t find_operation(const char *name);
+typedef int (*operation_handler_t)(dac63004w_context *ctx, uint8_t channel, float amplitude, uint16_t freqeuency);
 
 // Operation structure
 typedef struct {
-    const char *name;
+    const char *waveform;
+    const char *output_mode;
     operation_handler_t handler;
 } operation_t;
+
+operation_handler_t find_operation(const char *waveform, const char *output_mode);
 
 #endif // OPERATIONS_H
