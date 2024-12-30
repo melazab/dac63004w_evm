@@ -1,26 +1,26 @@
 # DAC63004W EVM Driver
 
-⚠️ **Status**: Work in Progress - Initial development
-
-Driver and control software for the Texas Instruments DAC63004W evaluation module.
+Control software for the Texas Instruments DAC63004W-WCSP EVM board.
 ![Description](docs/images/dac63004wcsp-evm-angled.png_large)
 
 ## Overview
 
-This project provides a Linux-based driver for controlling the DAC63004W evaluation module using the FTDI interface.
+This project provides a command-line interface for controlling the DAC63004W evaluation module.
 
 ## Features
 
-- Linux-based driver implementation
+- Command-line interface
 - FTDI interface support
 - Control software for DAC63004W evaluation module
+- Voltage output on DAC channels 0-3 (Working on adding current output)
+- DC and sine waveforms
 
 ## Prerequisites
 
 - Linux operating system
 - GCC compiler
 - Make build system
-- FTDI libraries
+- libft4222 library from FTDI
 
 ## Building
 
@@ -30,12 +30,13 @@ make
 
 ## Usage
 
-> ⚠️ This section is under development
-
 Basic usage instructions will be added soon. For now, you can:
 
 1. Build the project with `make`
-2. Run the executable: `./bin/dac63004 dc_voltage <channel> <voltage>`
+2. Run one of the following valid executables:
+   `./bin/dac63004 dc voltage <channel> <voltage>` or
+   `./bin/dac63004 sine voltage <channel> <amplitude <frequency>`
+3. Get help with: `./bin/dac63004 --help`
 
 ## Contributing
 
@@ -75,5 +76,5 @@ Mohamed Elazab
 
 ## Acknowledgments
 
-- Texas Instruments for the DAC63004W documentation
-- FTDI for their interface libraries
+- Texas Instruments for the DAC63004W
+- FTDI for their interface library
