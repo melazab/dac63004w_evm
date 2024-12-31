@@ -70,10 +70,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## Author
-
-Mohamed Elazab
-
 ## Acknowledgments
 
 - Texas Instruments for the DAC63004W
